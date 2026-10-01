@@ -9,11 +9,12 @@ import SwiftUI
 
 @main
 struct Skill_BirdApp: App {
+    @UIApplicationDelegateAdaptor(SkillBirdDelegate.self) private var appDelegate
     @StateObject private var appState = AppState()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            FlightGateView()
                 .environmentObject(appState)
                 .preferredColorScheme(.dark)
         }
