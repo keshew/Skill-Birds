@@ -5,6 +5,10 @@ import FirebaseMessaging
 import UIKit
 import UserNotifications
 
+enum AviaryOrientationPolicy {
+    static var webContentIsVisible = false
+}
+
 extension Notification.Name {
     static let birdFirebaseTokenReady = Notification.Name("birdFirebaseTokenReady")
     static let birdAttributionReady = Notification.Name("birdAttributionReady")
@@ -66,6 +70,13 @@ final class BirdAttributionObserver: NSObject, AdjustDelegate {
 final class SkillBirdDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     private let adjustAppToken = "51nsitg9eu80"
     private let attributionCollector = BirdAttributionObserver()
+
+    func application(
+        _ application: UIApplication,
+        supportedInterfaceOrientationsFor window: UIWindow?
+    ) -> UIInterfaceOrientationMask {
+        AviaryOrientationPolicy.webContentIsVisible ? .all : .portrait
+    }
 
     func application(
         _ application: UIApplication,
@@ -165,10 +176,6 @@ final class SkillBirdDelegate: NSObject, UIApplicationDelegate, UNUserNotificati
     ) {
         Messaging.messaging().appDidReceiveMessage(userInfo)
         savePushID(from: userInfo)
-        UserDefaults.standard.set(true, forKey: BirdLaunchVault.pendingPushKey)
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .aviaryPushOpened, object: nil)
-        }
         completionHandler(.newData)
     }
 
